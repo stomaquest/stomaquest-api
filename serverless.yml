@@ -1,0 +1,41 @@
+service: stomaquest-api
+
+useDotenv: true
+custom:
+  region: "us-east-1"
+  serverless-offline:
+    httpPort: 4000
+    allowCache: true
+    noPrependStageInUrl: true 
+  prune:
+    automatic: true
+    includeLayers: true
+    number: 5
+
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - node_modules/.pnpm/**
+
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+functions:
+  main:
+    handler: src/main.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  - serverless-prune-versions
